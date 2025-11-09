@@ -1,10 +1,29 @@
 import { useCreatePost } from "../hooks/create-post";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import styles from "../css/createPost.module.css";
+import PhotoModal from "../components/photo-displayer";
 
 function CreatePostPage() {
-  const { register, handleSubmit, onSubmit, errors } = useCreatePost();
+  const { register, handleSubmit, onSubmit, watch, errors, errorMsg } =
+    useCreatePost();
+  const [showPhoto, setShowPhoto] = useState(false);
+  const [urlPhoto, setUrlPhoto] = useState(null);
   const navigate = useNavigate();
+  const watchImages = watch("images");
+
+  const previewImages = watchImages
+    ? Array.from(watchImages).map((file) => URL.createObjectURL(file))
+    : [];
+
+  useEffect(() => {
+    return () => {
+      if (previewImages.length > 0) {
+        previewImages.forEach((src) => URL.revokeObjectURL(src));
+      }
+    };
+  }, [watchImages]);
+
   return (
     <div className={styles.createPage}>
       <p onClick={() => navigate(-1)} className="navigate">
@@ -35,7 +54,7 @@ function CreatePostPage() {
         <textarea
           {...register("content", {
             required: "Поле повинно бути заповненим!",
-            minLength: { value: 2, message: "Повинно бути хочаби 2 символи!" },
+            minLength: { value: 3, message: "Повинно бути хочаби 3 символи!" },
             validate: (value) =>
               value.trim() !== "" || "Поле повинно містити символи!",
           })}
@@ -63,18 +82,41 @@ function CreatePostPage() {
           style={{ display: "none" }}
           multiple
         />
+        {previewImages?.length > 0 && (
+          <div className={styles.imageContainer}>
+            {previewImages.map((src, index) => (
+              <img
+                key={index}
+                src={src}
+                className="photo-click"
+                onClick={() => {
+                  setShowPhoto(true);
+                  setUrlPhoto(src);
+                }}
+              />
+            ))}
+          </div>
+        )}
         <button
           onClick={() => document.getElementById("fileInput").click()}
-          className={styles.inputFileButton}
+          className={`${styles.inputFileButton} ${styles.formButton}`}
           type="button"
         >
           Завантажити фото
         </button>
-        <p className="errorText">{errors.images?.message}</p>
 
-        <button type="submit" style={{ border: "none" }}>
+        <p className="errorText">{errors.images?.message}</p>
+        {showPhoto && (
+          <PhotoModal photoUrl={urlPhoto} setShowPhoto={setShowPhoto} />
+        )}
+        <button
+          type="submit"
+          style={{ border: "none" }}
+          className={styles.formButton}
+        >
           Створити
         </button>
+        <p className="errorText">{errorMsg}</p>
       </form>
     </div>
   );

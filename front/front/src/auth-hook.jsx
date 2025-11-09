@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useConfirm } from "./alertContext";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -8,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const { confirm } = useConfirm();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,19 +38,25 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const LogOut = async () => {
-    try {
-      setIsLoggedOut(true);
-      await axios.post(
-        "http://localhost:5000/un/logout",
-        {},
-        { withCredentials: true }
-      );
-      navigate("/");
-      setUser(null);
-    } catch (error) {
-      setError(error.response?.data?.message || error.message);
-    } finally {
-      setIsLoggedOut(false);
+    const ok = await confirm({
+      title: "Вийти з облікового запису?",
+    });
+
+    if (ok) {
+      try {
+        setIsLoggedOut(true);
+        await axios.post(
+          "http://localhost:5000/un/logout",
+          {},
+          { withCredentials: true }
+        );
+        navigate("/");
+        setUser(null);
+      } catch (error) {
+        setError(error.response?.data?.message || error.message);
+      } finally {
+        setIsLoggedOut(false);
+      }
     }
   };
 

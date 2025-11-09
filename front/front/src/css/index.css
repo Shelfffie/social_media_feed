@@ -66,3 +66,7 @@ input:focus {
   text-decoration: none;
   cursor: pointer;
 }
+
+.photo-click {
+  cursor: pointer;
+}

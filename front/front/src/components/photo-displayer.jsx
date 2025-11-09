@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../css/photoDisplayer.module.css";
+import styles from "../css/modal-window.module.css";
 
 export default function PhotoModal({ photoUrl, setShowPhoto }) {
   const [selectedPhoto, setSelectedPhoto] = useState(photoUrl);

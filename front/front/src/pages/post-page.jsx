@@ -1,54 +1,26 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { Link, replace, useNavigate, useParams } from "react-router-dom";
 import { PostCommentHook } from "../hooks/post-comment";
 import { useAuth } from "../auth-hook";
 import { useLikes } from "../hooks/set-like";
 import styles from "../css/postPage.module.css";
 import forBtn from "../css/post-feed.module.css";
 import PhotoModal from "../components/photo-displayer";
+import { usePostInfo } from "../hooks/get-a-single-post";
+import btnStyle from "../css/createPost.module.css";
 
 function PostPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [post, setPost] = useState();
-  const [isLoading, setIsLoading] = useState();
+  const { post, setPost, isLoading } = usePostInfo(id);
   const { handleCommentChange, addCommentSubmit, comment } = PostCommentHook(
     null,
     setPost
   );
-  const { isLoggedIn } = useAuth();
-  const [likes, setLikes] = useState();
+  const { isLoggedIn, user } = useAuth();
   const { setUnsetLike } = useLikes(null, setPost);
   const [showPhoto, setShowPhoto] = useState(false);
   const [urlPhoto, setUrlPhoto] = useState(null);
-
-  useEffect(() => {
-    if (isLoading) return;
-    setIsLoading(true);
-    const getPost = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/un/post/${id}`,
-          { withCredentials: true }
-        );
-        setPost(response.data);
-        setLikes(response.data.likes.length);
-      } catch (error) {
-        if (error.response.status === 404 || error.response.status === 400) {
-          navigate("/post/invalid");
-        } else {
-          console.log(
-            "Server error",
-            error.response ? error.response.data : error.message
-          );
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getPost();
-  }, [id, navigate]);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -78,7 +50,7 @@ function PostPage() {
                     setShowPhoto(true);
                     setUrlPhoto(`http://localhost:5000${path}`);
                   }}
-                  className={styles.photo}
+                  className=".photo-click"
                 />
               ))}{" "}
             </div>
@@ -94,9 +66,16 @@ function PostPage() {
               <strong> {post?.ownerId?.name}</strong>
             </Link>
           </div>
+          {post?.ownerId?._id === user && (
+            <button
+              onClick={() => navigate(`/post/${id}/edit`)}
+              className={btnStyle.formButton}
+            >
+              Редагувати
+            </button>
+          )}
           <div>
-            {" "}
-            <p>Вподобайки: {likes}</p>
+            <p>Вподобайки: {post?.totalLikes}</p>
             {isLoggedIn &&
               (post?.isLiked ? (
                 <button
@@ -129,7 +108,7 @@ function PostPage() {
                   placeholder="Add comment"
                   value={comment[id] || ""}
                   onChange={(e) => handleCommentChange(id, e.target.value)}
-                />{" "}
+                />
                 <button>.</button>
               </form>
             </div>

@@ -4,10 +4,10 @@ import { useAuth } from "../auth-hook";
 
 export function useLikes(setData, setPost) {
   const { isLoggedIn } = useAuth();
-  const [isPocessing, setIsProcessing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const setUnsetLike = async (id) => {
-    if (!isLoggedIn || isPocessing) return;
+    if (!isLoggedIn || isProcessing) return;
     setIsProcessing(true);
     try {
       const response = await axios.put(

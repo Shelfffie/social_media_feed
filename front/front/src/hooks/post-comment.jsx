@@ -22,7 +22,6 @@ export function PostCommentHook(setData, setPost) {
         { withCredentials: true }
       );
       if (response.status === 200) {
-        alert("Comment success sended!");
         setComment((prev) => ({ ...prev, [postId]: "" }));
         if (setData) {
           setData((prev) => ({

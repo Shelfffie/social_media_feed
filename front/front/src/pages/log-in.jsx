@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import styles from "../css/login-register.module.css";
+import { useConfirm } from "../alertContext";
 
 function Login() {
   const {
@@ -13,6 +14,7 @@ function Login() {
   } = useForm();
   const { setUser } = useAuth();
   const [errorMessage, setErrorMessage] = useState();
+  const { alert } = useConfirm();
 
   const navigate = useNavigate();
 
@@ -24,9 +26,11 @@ function Login() {
         { withCredentials: true }
       );
       if (response.status === 200) {
-        alert("Log in success!");
-        setUser(response.data.payload);
-        navigate("/");
+        const ok = await alert({ title: "Вхід успішний!" });
+        if (ok) {
+          setUser(response.data.payload);
+          navigate("/");
+        }
       }
     } catch (error) {
       console.log(

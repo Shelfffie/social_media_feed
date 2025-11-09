@@ -2,9 +2,11 @@ import { useAuth } from "./auth-hook";
 import { Link } from "react-router-dom";
 import { useUserInfo } from "./hooks/getUserHook";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import styles from "./css/profile.module.css";
+import PhotoModal from "./components/photo-displayer";
+import { useConfirm } from "./alertContext";
 
 function Profile() {
   const {
@@ -15,37 +17,54 @@ function Profile() {
   } = useForm();
   const { loading, LogOut } = useAuth();
   const { data, setData } = useUserInfo();
-  const defaultImage = "/346569.png";
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({});
+  const [showPhoto, setShowPhoto] = useState(false);
+  const [urlPhoto, setUrlPhoto] = useState(null);
+  const { confirm, alert } = useConfirm();
   const watchAvatar = watch("avatar");
+  const defaultImage = "/346569.png";
+  const avatarSrc =
+    watchAvatar && watchAvatar.length > 0
+      ? URL.createObjectURL(watchAvatar[0])
+      : data?.avatar
+      ? `http://localhost:5000${data.avatar}`
+      : defaultImage;
 
   const saveChangeData = async (data) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("email", data.email);
-    if (data.avatar && data.avatar.length > 0) {
-      formData.append("avatar", data.avatar[0]);
-    }
+    const ok = await confirm({
+      title: "Зберегти дані?",
+      message: "Цю дію не можна скасувати",
+    });
 
-    try {
-      const response = await axios.put(
-        "http://localhost:5000/un/change-profile-data",
-        formData,
-        { withCredentials: true }
-      );
-      if (response.status === 200) {
-        alert("Профіль успішно оновлено!");
-        console.log(response.data.user);
-
-        setData(response.data.user);
-        setIsEditing(false);
+    if (ok) {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      if (data.avatar && data.avatar.length > 0) {
+        formData.append("avatar", data.avatar[0]);
       }
-    } catch (error) {
-      console.log(
-        "Server error:",
-        error.response ? error.response.data : error.message
-      );
+
+      try {
+        const response = await axios.put(
+          "http://localhost:5000/un/change-profile-data",
+          formData,
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          await alert({
+            title: "Готово!",
+            message: "Успішно збережено!",
+          });
+          setData(response.data.user);
+          setIsEditing(false);
+        }
+      } catch (error) {
+        console.log(
+          "Server error:",
+          error.response ? error.response.data : error.message
+        );
+      }
     }
   };
 
@@ -64,14 +83,12 @@ function Profile() {
           <div className={styles.nameetc}>
             <h1>Ваш профіль:</h1>
             <img
-              src={
-                watchAvatar && watchAvatar.length > 0
-                  ? URL.createObjectURL(watchAvatar[0])
-                  : data?.avatar
-                  ? `http://localhost:5000${data.avatar}`
-                  : defaultImage
-              }
+              src={avatarSrc}
               alt="avatar"
+              onClick={() => {
+                setShowPhoto(true);
+                setUrlPhoto(avatarSrc);
+              }}
               className={styles.profileAvatar}
             />
             {isEditing && (
@@ -192,6 +209,9 @@ function Profile() {
               </>
             )}
           </div>
+          {showPhoto && (
+            <PhotoModal photoUrl={urlPhoto} setShowPhoto={setShowPhoto} />
+          )}
           <nav className={styles.nav}>
             <Link to="/my-friends">Friend's list</Link>
             <Link to="/my-posts">Post's list</Link>

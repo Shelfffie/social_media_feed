@@ -7,6 +7,8 @@ import {
   getPostsTenAndFilter,
   getPostById,
   createPost,
+  editePost,
+  deletePost,
 } from "./controllers/posts.js";
 import { likeUnlike } from "./controllers/likes.js";
 import { getTenByPage } from "./controllers/getTenByPage.js";
@@ -65,6 +67,10 @@ router.post(
   uploadPosts.array("images"),
   createPost
 );
+
+router.put("/post/:id", cookieGetId, editePost);
+
+router.delete("/post/:id", cookieGetId, deletePost);
 
 const uploadAvatar = createUploader("avatars");
 router.put(

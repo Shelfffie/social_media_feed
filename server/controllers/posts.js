@@ -120,3 +120,46 @@ export const createPost = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+export const editePost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const newData = req.body;
+    if (!newData) {
+      return res.status(400).json({ message: "Не надано даних для зміни" });
+    }
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Пост не знайдено" });
+    }
+    if (post.ownerId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Немає доступу" });
+    }
+
+    if (newData.title) post.title = newData.title;
+    if (newData.content) post.content = newData.content;
+
+    await post.save();
+    res.json({ message: "Пост оновлено!", post });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const post = await Post.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Пост не знайдено" });
+    }
+    if (post.ownerId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Немає доступу" });
+    }
+    await post.deleteOne();
+    res.json({ message: "Пост видалено!" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

@@ -67,7 +67,7 @@ function Friends({ type }) {
           {typeTitle[type]?.title || "Список друзів:"}
         </h1>
         {friends?.length === 0 || !friends ? (
-          <p className="titleForProfilePages">У вас поки немає друзів</p>
+          <p className="titleForProfilePages">Тут поки пусто</p>
         ) : (
           <ul>
             {friends?.map((friend, id) => (

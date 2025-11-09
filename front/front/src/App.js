@@ -15,103 +15,108 @@ import CreatePostPage from "./pages-for-profile/create-post";
 import PostsThatILiked from "./pages-for-profile/get-posts-by-likes";
 import PostsThatICommented from "./pages-for-profile/commented-posts";
 import Friends from "./components/display-friends";
+import EditPostPage from "./pages/editing-post";
+import { ConfirmProvider } from "./alertContext";
 
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/error" element={<div>This page doesn't exist</div>} />
-          <Route
-            path="/registration"
-            element={
-              <RedirectAuth>
-                <Registration />
-              </RedirectAuth>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <RedirectAuth>
-                <Login />
-              </RedirectAuth>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <NoLoggedIn>
-                <Profile />
-              </NoLoggedIn>
-            }
-          />
-          <Route
-            path="/my-friends"
-            element={
-              <NoLoggedIn>
-                <Friends type="friends" />
-              </NoLoggedIn>
-            }
-          />
-          <Route path="/user/:id" element={<OtherUserProfile />} />
-          <Route path="/post/:id" element={<PostPage />} />
-          <Route
-            path="/post/invalid"
-            element={<h1>Такого поста не існує</h1>}
-          />{" "}
-          <Route
-            path="/my-posts"
-            element={
-              <NoLoggedIn>
-                <MyPosts />
-              </NoLoggedIn>
-            }
-          />
-          <Route
-            path="/liked-posts"
-            element={
-              <NoLoggedIn>
-                <PostsThatILiked />
-              </NoLoggedIn>
-            }
-          />
-          <Route
-            path="/commented-posts"
-            element={
-              <NoLoggedIn>
-                <PostsThatICommented />
-              </NoLoggedIn>
-            }
-          />
-          <Route
-            path="/create-post"
-            element={
-              <NoLoggedIn>
-                <CreatePostPage />
-              </NoLoggedIn>
-            }
-          />
-          <Route
-            path="/received-requests"
-            element={
-              <NoLoggedIn>
-                <Friends type="received-requests" />
-              </NoLoggedIn>
-            }
-          />
-          <Route
-            path="/sended-requests"
-            element={
-              <NoLoggedIn>
-                <Friends type="sended-requests" />
-              </NoLoggedIn>
-            }
-          />
-        </Routes>
-      </AuthProvider>{" "}
+      <ConfirmProvider>
+        <AuthProvider>
+          <Header />
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/error" element={<div>This page doesn't exist</div>} />
+            <Route
+              path="/registration"
+              element={
+                <RedirectAuth>
+                  <Registration />
+                </RedirectAuth>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <RedirectAuth>
+                  <Login />
+                </RedirectAuth>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <NoLoggedIn>
+                  <Profile />
+                </NoLoggedIn>
+              }
+            />
+            <Route
+              path="/my-friends"
+              element={
+                <NoLoggedIn>
+                  <Friends type="friends" />
+                </NoLoggedIn>
+              }
+            />
+            <Route path="/user/:id" element={<OtherUserProfile />} />
+            <Route path="/post/:id" element={<PostPage />} />
+            <Route path="/post/:id/edit" element={<EditPostPage />} />
+            <Route
+              path="/post/invalid"
+              element={<h1>Такого поста не існує</h1>}
+            />{" "}
+            <Route
+              path="/my-posts"
+              element={
+                <NoLoggedIn>
+                  <MyPosts />
+                </NoLoggedIn>
+              }
+            />
+            <Route
+              path="/liked-posts"
+              element={
+                <NoLoggedIn>
+                  <PostsThatILiked />
+                </NoLoggedIn>
+              }
+            />
+            <Route
+              path="/commented-posts"
+              element={
+                <NoLoggedIn>
+                  <PostsThatICommented />
+                </NoLoggedIn>
+              }
+            />
+            <Route
+              path="/create-post"
+              element={
+                <NoLoggedIn>
+                  <CreatePostPage />
+                </NoLoggedIn>
+              }
+            />
+            <Route
+              path="/received-requests"
+              element={
+                <NoLoggedIn>
+                  <Friends type="received-requests" />
+                </NoLoggedIn>
+              }
+            />
+            <Route
+              path="/sended-requests"
+              element={
+                <NoLoggedIn>
+                  <Friends type="sended-requests" />
+                </NoLoggedIn>
+              }
+            />
+          </Routes>
+        </AuthProvider>{" "}
+      </ConfirmProvider>
     </BrowserRouter>
   );
 }
