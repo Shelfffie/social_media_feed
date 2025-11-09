@@ -1,4 +1,0 @@
-GET http://localhost:5000/un/users/68e39e6adc9de529dbe2c07c
-Content-Type: application/json
-Cookie: user=j%3A%2268e39e6adc9de529dbe2c07c%22; Max-Age=900; Path=/; Expires=Tue, 07 Oct 2025 10:14:29 GMT
-
