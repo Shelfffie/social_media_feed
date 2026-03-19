@@ -1,6 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
-import { useRef } from "react";
+import { useState, useRef } from "react";
 
 export function useFriendsStatus(friends, setFriends, user) {
   const [showFriendsStatus, setShowFriendsStatus] = useState(false);

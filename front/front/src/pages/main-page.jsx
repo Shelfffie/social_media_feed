@@ -1,5 +1,4 @@
 import { useAuth } from "../auth-hook";
-import { Link } from "react-router-dom";
 import { DisplayPosts } from "../components/display-posts";
 import { useIntersectionObserverPostsAndPosts } from "../hooks/intersection-observer";
 
