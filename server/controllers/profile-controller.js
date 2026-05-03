@@ -1,4 +1,4 @@
-import User from "../userDB.js";
+import User from "../schemas/userDB.js";
 
 export const changeProfileInfo = async (req, res) => {
   try {

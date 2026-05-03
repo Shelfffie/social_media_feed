@@ -1,7 +1,5 @@
-import express from "express";
-import Post from "../noteDB.js";
-import User from "../userDB.js";
-import Comments from "../commentsdb.js";
+import Post from "../schemas/noteDB.js";
+import User from "../schemas/userDB.js";
 
 export const likeUnlike = async (req, res, id) => {
   try {

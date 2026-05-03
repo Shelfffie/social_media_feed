@@ -1,4 +1,4 @@
-import User from "../userDB.js";
+import User from "../schemas/userDB.js";
 
 export const setLets = (count, page, totalPage, posts) => {
   const data = {

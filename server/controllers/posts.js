@@ -1,5 +1,5 @@
-import Post from "../noteDB.js";
-import User from "../userDB.js";
+import Post from "../schemas/noteDB.js";
+import User from "../schemas/userDB.js";
 
 import mongoose from "mongoose";
 import { setLets } from "./getTenByPage.js";

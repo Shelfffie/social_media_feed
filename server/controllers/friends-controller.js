@@ -1,4 +1,4 @@
-import User from "../userDB.js";
+import User from "../schemas/userDB.js";
 const addOrDeleteFriend = (id, userId, user, newFriend) => {
   if (!id) {
     return {

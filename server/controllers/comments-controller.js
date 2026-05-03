@@ -1,6 +1,6 @@
-import Comments from "../commentsdb.js";
-import User from "../userDB.js";
-import Post from "../noteDB.js";
+import Comments from "../schemas/commentsdb.js";
+import User from "../schemas/userDB.js";
+import Post from "../schemas/noteDB.js";
 
 export const addComment = async (req, res) => {
   try {

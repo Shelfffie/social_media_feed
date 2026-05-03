@@ -1,4 +1,4 @@
-import User from "../userDB.js";
+import User from "../schemas/userDB.js";
 
 export const getUserById = async (req, res, id, isAnotherUser = false) => {
   const user = await User.findById(id).select(
